@@ -36,7 +36,7 @@ export default class Server extends Events {
                 return res.status(404).end();
             }
 
-            res.sendFile(path.join(__dirname, '../public', 'index.html'));
+            res.sendFile(path.join(__dirname, '../public', 'index.html'), { dotfiles: 'allow' });
 
         });
     }
