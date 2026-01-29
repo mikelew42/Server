@@ -4,7 +4,7 @@ import chokidar from "chokidar";
 
 export default class Directory {
 
-    static plugin(server) {
+    static setup(server) {
         new Directory(server);
     }
 

@@ -11,7 +11,7 @@ const client = new OAuth2Client(CLIENT_ID);
 
 export default class AuthPlugin {
 
-    static plugin(server) {
+    static setup(server) {
         server.on("init", () => {
             new AuthPlugin(server);
         });

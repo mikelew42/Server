@@ -3,7 +3,7 @@ import https from "https";
 
 export default class SSL {
 
-    static plugin(server) {
+    static setup(server) {
         const prod = process.env.NODE_ENV === 'production';
         if (!prod) return;
 

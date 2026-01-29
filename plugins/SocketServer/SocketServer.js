@@ -4,7 +4,7 @@ import Socket from "./Socket.js";
 
 export default class SocketServer extends Events {
 
-    static plugin(server) {
+    static setup(server) {
         server.on("http", () => {
             server.socket_server = new SocketServer({ server });
         });

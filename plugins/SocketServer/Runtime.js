@@ -4,7 +4,7 @@ import { exec } from "child_process";
 
 export default class Runtime {
 
-    static plugin(server) {
+    static setup(server) {
         server.on("new", (instance) => {
             if (instance.constructor.name === "Socket") {
                 new Runtime(instance);

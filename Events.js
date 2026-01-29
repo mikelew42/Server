@@ -103,8 +103,8 @@ export default class Events {
         }
     }
 
-    static plugin(instance) {
-        console.log(`Implement ${this.name}.plugin()`, instance);
+    static setup(instance) {
+        console.log(`Implement ${this.name}.setup()`, instance);
         // new this({ instance })
         return this;
     }
