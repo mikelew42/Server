@@ -94,8 +94,8 @@ export default class Events {
             return this;
 
             // if plugin has a plugin method, call it for new instances
-        } else if (plugin.plugin) {
-            this.on("new", plugin.plugin.bind(plugin));
+        } else if (plugin.setup) {
+            this.on("new", plugin.setup.bind(plugin));
             return this;
         } else {
             console.warn("Plugin must be a function or have a plugin method");
