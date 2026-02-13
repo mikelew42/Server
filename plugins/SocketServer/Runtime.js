@@ -4,24 +4,22 @@ import { exec } from "child_process";
 
 export default class Runtime {
 
-    static setup(server) {
-        server.on("new", (instance) => {
-            if (instance.constructor.name === "Socket") {
-                new Runtime(instance);
-            }
-        });
+    static setup(socket_server) {
+        new Runtime(socket_server);
     }
 
-    constructor(socket) {
-        this.socket = socket;
+    constructor(socket_server) {
+		console.log("Runtime constructor");
+        this.socket_server = socket_server;
         this.initialize();
     }
 
     initialize() {
-        this.socket.on("rpc:write", (args) => this.write(...args));
-        this.socket.on("rpc:ls", (args) => this.ls(...args));
-        this.socket.on("rpc:rm", (args) => this.rm(...args));
-        this.socket.on("rpc:cmd", (args) => this.cmd(...args));
+		console.log("Runtime initialized");
+        this.socket_server.on("rpc:write", (args) => this.write(...args));
+        this.socket_server.on("rpc:ls", (args) => this.ls(...args));
+        this.socket_server.on("rpc:rm", (args) => this.rm(...args));
+        this.socket_server.on("rpc:cmd", (args) => this.cmd(...args));
     }
 
     write(file, data) {

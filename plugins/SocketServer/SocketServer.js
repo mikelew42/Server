@@ -11,6 +11,7 @@ export default class SocketServer extends Events {
     }
 
     initialize() {
+		console.log("SocketServer initialized");
         this.sockets = [];
 
         this.wss = new WebSocketServer({
