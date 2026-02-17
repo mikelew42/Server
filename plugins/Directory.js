@@ -10,6 +10,7 @@ export default class Directory {
 
     constructor(server) {
         this.server = server;
+		this.server.directory = this;
         this.initialize();
     }
 

@@ -4,50 +4,58 @@ import { exec } from "child_process";
 
 export default class Runtime {
 
-    static setup(socket_server) {
-        new Runtime(socket_server);
+    static setup(socket) {
+        new Runtime(socket);
     }
 
-    constructor(socket_server) {
+    constructor(socket) {
 		console.log("Runtime constructor");
-        this.socket_server = socket_server;
+        this.socket = socket;
+		this.server = socket.server;
         this.initialize();
     }
 
     initialize() {
 		console.log("Runtime initialized");
-        this.socket_server.on("rpc:write", (args) => this.write(...args));
-        this.socket_server.on("rpc:ls", (args) => this.ls(...args));
-        this.socket_server.on("rpc:rm", (args) => this.rm(...args));
-        this.socket_server.on("rpc:cmd", (args) => this.cmd(...args));
+        this.socket.on("rpc:write", (args, index) => this.write(...args, index));
+        this.socket.on("rpc:ls", (args, index) => this.ls(...args, index));
+        this.socket.on("rpc:rm", (args, index) => this.rm(...args, index));
+        this.socket.on("rpc:cmd", (args) => this.cmd(...args));
     }
 
-    write(file, data) {
+    write(file, data, index) {
         const full_path = path.resolve("./public/", this.to_relative(file));
-        fs.writeFile(full_path, data, err => {
-            if (err) console.error(err);
-        });
+		try {
+			fs.mkdirSync(path.dirname(full_path), { recursive: true });
+			fs.writeFileSync(full_path, data);
+			this.socket.send({ index, response: "write successful" });
+		} catch (e) {
+			console.error(e);
+			this.socket.send({ index, response: "write failed" });
+		}
     }
 
-    ls(dir = "./") {
+    ls(dir = "./", index) {
         const full_path = path.resolve("./public/", this.to_relative(dir));
         try {
-            const files = this.socket.server.sockets.server.build_dir(full_path); // This is a bit messy, build_dir should maybe be in a util
-            this.socket.send({ method: "ls", args: [files], index: this.socket.last_index });
+            const files = this.server.directory.build_dir(full_path); // This is a bit messy, build_dir should maybe be in a util
+            this.socket.send({ response: files, index });
         } catch (e) {
             if (e.code === "ENOENT") {
                 fs.mkdirSync(full_path);
-                this.ls(dir);
+                this.ls(dir, index);
             }
         }
     }
 
-    rm(dir) {
+    rm(dir, index) {
         const full_path = path.resolve("./public/", this.to_relative(dir));
         try {
             fs.rmSync(full_path, { recursive: true });
+			this.socket.send({ index, response: "rm successful" });
         } catch (e) {
             console.error("Error removing directory:", e);
+			this.socket.send({ index, response: "rm failed" });
         }
     }
 

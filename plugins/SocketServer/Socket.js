@@ -22,7 +22,7 @@ export default class Socket extends Events {
 
             if (message.method) {
 				console.log(`RPC: ${message.method}`);
-                this.socket_server.emit(`rpc:${message.method}`, message.args, message.id);
+                this.emit(`rpc:${message.method}`, message.args, message.index);
             }
         } catch (e) {
             console.error("Failed to parse socket message", e);
