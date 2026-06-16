@@ -51,7 +51,8 @@ export default class Events {
     }
 
     static get events() {
-        return this._events || (this._events = {});
+		if (Object.hasOwn(this, "_events")) return this._events;
+        return this._events = {};
     }
 
     static on(event, listener) {
@@ -93,18 +94,18 @@ export default class Events {
             this.on("new", plugin.bind(plugin));
             return this;
 
-            // if plugin has a plugin method, call it for new instances
-        } else if (plugin.plugin) {
-            this.on("new", plugin.plugin.bind(plugin));
+        // if plugin has a setup method, call it for new instances
+        } else if (plugin.setup) {
+            this.on("new", plugin.setup.bind(plugin));
             return this;
         } else {
-            console.warn("Plugin must be a function or have a plugin method");
+            console.warn("Plugin must be a function or have a setup method");
             return this;
         }
     }
 
-    static plugin(instance) {
-        console.log(`Implement ${this.name}.plugin()`, instance);
+    static setup(instance) {
+        console.log(`Implement ${this.name}.setup()`, instance);
         // new this({ instance })
         return this;
     }

@@ -3,7 +3,7 @@ import chokidar from "chokidar";
 
 export default class LiveReload extends Events {
 
-    static plugin(socket_server) {
+    static setup(socket_server) {
         socket_server.live_reload = new LiveReload({ socket_server });
     }
 

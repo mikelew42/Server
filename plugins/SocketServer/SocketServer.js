@@ -4,13 +4,14 @@ import Socket from "./Socket.js";
 
 export default class SocketServer extends Events {
 
-    static plugin(server) {
+    static setup(server) {
         server.on("http", () => {
             server.socket_server = new SocketServer({ server });
         });
     }
 
     initialize() {
+		console.log("SocketServer initialized");
         this.sockets = [];
 
         this.wss = new WebSocketServer({
@@ -19,7 +20,20 @@ export default class SocketServer extends Events {
         });
 
         this.wss.on("connection", (ws, req) => {
-            this.sockets.push(new Socket({ ws, req, server: this.server, socket_server: this }));
+            this.sockets.push(
+				new SocketServer.Socket({ 
+					ws,
+					req,
+
+					// socket.server === main Server instance
+					server: this.server,
+
+					// socket.socket_server === SocketServer instance
+					socket_server: this
+				})
+			);
         });
     }
 }
+
+SocketServer.Socket = Socket;
