@@ -23,9 +23,13 @@ export default class Server extends Events {
     initialize_express() {
         this.express = express;
         this.app = express();
+        this.router = express.Router();
 
         // serve static files before fallback
         this.app.use(express.static("public", { redirect: false }));
+
+        // hook point for subclasses/plugins to add routes before the fallback
+        this.app.use(this.router);
 
         // if static request fails, fallback to index.html
         this.app.use((req, res, next) => {
@@ -45,7 +49,7 @@ export default class Server extends Events {
         this.http = http.createServer(this.app);
     }
 
-    listen(port = 80, host = '0.0.0.0') {
+    listen(port = process.env.PORT || 80, host = '0.0.0.0') {
         this.http.listen(port, host, () => {
             console.log(`Server listening on ${host}:${port}`);
             this.emit("listening", { port, host });
