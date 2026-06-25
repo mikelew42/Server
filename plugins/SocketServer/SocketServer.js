@@ -6,12 +6,12 @@ export default class SocketServer extends Events {
 
     static setup(server) {
         server.on("http", () => {
-            server.socket_server = new SocketServer({ server });
+            server.socket_server = new this({ server });
         });
     }
 
     initialize() {
-		console.log("SocketServer initialized");
+		console.log(this.constructor.name + " initialized");
         this.sockets = [];
 
         this.wss = new WebSocketServer({

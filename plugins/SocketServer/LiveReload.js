@@ -8,6 +8,7 @@ export default class LiveReload extends Events {
     }
 
     initialize() {
+		console.log("Initializing LiveReload");
         this.watcher = chokidar.watch("public", {
             ignored: (path, stats) => {
                 if (stats && stats.isDirectory()) return false;
